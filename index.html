@@ -41,6 +41,9 @@
                         <p>Or resume from file:</p>
                         <input type="file" id="json-upload" accept=".json" style="display: none;">
                         <button id="upload-trigger" class="btn btn-outline btn-sm">Upload Progress File</button>
+                        <p class="upload-hint" style="font-size: 0.75rem; margin-top: 8px; opacity: 0.8; color: #94A3B8;">
+                            (Select the <strong>"CareerDiscovery_Data.json"</strong> file from your device)
+                        </p>
                     </div>
                 </div>
             </div>
@@ -68,13 +71,6 @@
             <header class="app-header">
                 <div class="brand">🎯 <span>Career Discovery</span></div>
 
-                <div class="progress-section">
-                    <div class="progress-bar-container">
-                        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
-                    </div>
-                    <span id="progress-percent">0% Complete</span>
-                </div>
-
                 <div class="header-actions">
                     <button id="clear-section" class="btn btn-outline btn-sm">Clear Section</button>
                     <button id="restart-top" class="btn btn-outline btn-sm" style="color: #EF4444; border-color: #EF4444;">Restart All</button>
@@ -93,6 +89,14 @@
                             <!-- Injected by JS -->
                         </ul>
                     </nav>
+
+                    <!-- NEW: Progress Area at bottom of Roadmap -->
+                    <div class="progress-container-sidebar">
+                        <div class="progress-bar-container">
+                            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                        </div>
+                        <span id="progress-percent">0% Journey Completed</span>
+                    </div>
                 </aside>
 
                 <!-- Expand button for minimized sidebar -->
