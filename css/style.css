@@ -135,7 +135,7 @@ h1 { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 800; margin-bottom: 20px;
     align-items: center;
 }
 
-/* Smarter Progress Bar (Moved to Bottom of Roadmap) */
+/* Smarter Progress Bar */
 .progress-container-sidebar {
     padding: 20px;
     background: #F1F5F9;
@@ -184,6 +184,48 @@ h1 { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 800; margin-bottom: 20px;
 }
 
 .question-text { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: block; color: var(--text-dark); }
+
+/* Alignment for Radio Buttons and Checkboxes */
+.option-group-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.option-item-compact {
+    padding: 12px 16px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    background: #F8FAFC;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.option-item-compact:hover {
+    background: #F1F5F9;
+    border-color: var(--primary-blue);
+}
+
+.option-item-compact.selected {
+    background: #EBF3FF;
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    font-weight: 700;
+}
+
+.option-item-compact input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
 
 /* Inputs */
 textarea, input, select {
