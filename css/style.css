@@ -347,3 +347,186 @@ textarea {
     .side-nav { position: fixed; left: 0; top: 60px; bottom: 0; width: 280px; transform: translateX(-100%); }
     .side-nav.active { transform: translateX(0); }
 }
+/* ============================================
+   MISSING BUTTON VARIANTS
+   ============================================ */
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border-light);
+    color: var(--text-dark);
+}
+.btn-outline:hover {
+    background: #F1F5F9;
+}
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    border-radius: 8px;
+}
+.btn-lg {
+    padding: 16px 36px;
+    font-size: 1.1rem;
+    border-radius: 14px;
+}
+.btn-success {
+    background: var(--success-green);
+    color: white;
+}
+.btn-success:hover {
+    background: #0ea271;
+}
+.btn-full {
+    width: 100%;
+}
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--error-red);
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 10px;
+    font-family: inherit;
+}
+
+/* ============================================
+   COMPLETION / JOURNEY MAPPED SCREEN
+   ============================================ */
+#completion.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    background: var(--bg-light);
+    padding: 40px 20px;
+}
+
+.result-container {
+    width: 100%;
+    max-width: 660px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 60px;
+}
+
+.success-header {
+    text-align: center;
+    padding: 20px 10px 0;
+}
+.big-icon {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 12px;
+}
+.success-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+.success-header p {
+    color: var(--text-gray);
+    font-size: 1rem;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.result-grid {
+    width: 100%;
+    display: block;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-light);
+}
+.result-card h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+.result-card p {
+    color: var(--text-gray);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+.highlight-card {
+    border: 2px solid var(--primary-blue);
+}
+
+.action-footer {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+/* ============================================
+   LANDING SCREEN EXTRAS
+   ============================================ */
+.badge {
+    display: inline-block;
+    background: rgba(74, 144, 226, 0.15);
+    color: var(--primary-blue);
+    border: 1px solid rgba(74, 144, 226, 0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.cta-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #94A3B8;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   MOBILE — COMPLETION SCREEN FIXES
+   ============================================ */
+@media (max-width: 600px) {
+    #completion.active {
+        padding: 24px 16px;
+    }
+    .success-header h1 {
+        font-size: 1.7rem;
+    }
+    .big-icon {
+        font-size: 2.8rem;
+    }
+    .result-card {
+        padding: 20px 18px;
+    }
+    .action-footer {
+        flex-direction: column;  /* Stack buttons vertically on mobile */
+        gap: 10px;
+    }
+    .action-footer .btn {
+        flex: unset !important;
+        width: 100%;
+    }
+    .result-grid {
+        margin: 0 auto;
+    }
+}
