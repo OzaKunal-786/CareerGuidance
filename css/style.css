@@ -530,3 +530,61 @@ textarea {
         margin: 0 auto;
     }
 }
+/* ============================================
+   MOBILE ROADMAP TOGGLE
+   ============================================ */
+
+/* Hide hamburger on desktop */
+.mobile-menu-btn {
+    display: none;
+}
+
+/* Overlay behind sidebar on mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 19;
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    /* Show hamburger button on mobile */
+    .mobile-menu-btn {
+        display: flex;
+        background: var(--primary-blue);
+        color: white;
+        border-color: var(--primary-blue);
+        font-weight: 700;
+    }
+
+    /* Sidebar slides in from left when active */
+    .side-nav {
+        position: fixed;
+        left: 0;
+        top: 60px;
+        bottom: 0;
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 20;
+    }
+
+    .side-nav.active {
+        transform: translateX(0);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Hide desktop expand button on mobile - not needed */
+    .expand-btn {
+        display: none !important;
+    }
+}
