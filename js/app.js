@@ -317,6 +317,17 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.height = el.scrollHeight + 'px'; // Expand to fit content
     }
 
+    function updateProgressBar() {
+        let completedCount = 0;
+        FORM_STRUCTURE.forEach((_, index) => {
+            if (isSectionComplete(index)) completedCount++;
+        });
+        const progress = Math.round((completedCount / FORM_STRUCTURE.length) * 100);
+
+        if (progressPercentText) progressPercentText.textContent = progress + '% Journey Completed';
+        if (progressBarFill) progressBarFill.style.width = progress + '%';
+    }
+
     function updateUI() {
         const sections = document.querySelectorAll('.form-section');
         sections.forEach((s, i) => s.style.display = i === currentSectionIndex ? 'block' : 'none');
@@ -329,9 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (finishBtn) finishBtn.style.display = (currentSectionIndex === FORM_STRUCTURE.length - 1) ? 'flex' : 'none';
         if (nextBtn) nextBtn.style.display = (currentSectionIndex === FORM_STRUCTURE.length - 1) ? 'none' : 'flex';
 
-        const progress = Math.round((currentSectionIndex / (FORM_STRUCTURE.length - 1)) * 100);
-        if (progressPercentText) progressPercentText.textContent = progress + '%';
-        if (progressBarFill) progressBarFill.style.width = progress + '%';
+        updateProgressBar();
 
         if (scrollTarget) scrollTarget.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -360,6 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData = { ...formData, ...entries };
         localStorage.setItem('careerFormData', JSON.stringify(formData));
         updateTicks();
+        updateProgressBar();
     }
 
     function isSectionComplete(index) {
