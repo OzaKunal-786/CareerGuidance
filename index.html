@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Discovery | Self-Assessment</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/docx@8.2.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex !important; }
+        .modal-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .modal-content { position: relative; z-index: 10001; background: white; width: 90%; max-width: 500px; padding: 40px; border-radius: 24px; color: #1e293b; }
+
+        #ai-prompt-container, #ai-footer-container { display: none; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 1. Landing Screen -->
+        <section id="landing" class="screen active">
+            <div class="landing-content">
+                <div class="badge">Professional Career Tool</div>
+                <h1>Discover Your <br><span class="highlight">Future Path</span></h1>
+                <p class="subtitle">A structured journey to uncover your true strengths and align them with the careers of tomorrow.</p>
+
+                <div class="cta-area">
+                    <button id="start-journey" class="btn btn-primary btn-lg">Start Assessment</button>
+                    <div class="upload-area">
+                        <p>Or resume from file:</p>
+                        <input type="file" id="json-upload" accept=".json" style="display: none;">
+                        <button id="upload-trigger" class="btn btn-outline btn-sm">Upload Progress File</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Info Modal -->
+        <div id="info-modal" class="modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <h2>Before You Begin</h2>
+                <div class="rules-box">
+                    <p>To get the best results from the AI at the end, follow these rules:</p>
+                    <ul>
+                        <li><strong>Be Specific:</strong> Use real examples instead of generic statements.</li>
+                        <li><strong>Be Honest:</strong> Your true experiences are what matter most.</li>
+                        <li><strong>Complete Flow:</strong> Try to complete this in one flow for a cohesive profile.</li>
+                    </ul>
+                </div>
+                <button id="confirm-start" class="btn btn-primary btn-full">I'm Ready, Let's Start</button>
+            </div>
+        </div>
+
+        <!-- 3. Main Form App -->
+        <main id="main-container" class="screen app-shell">
+            <header class="app-header">
+                <div class="brand">🎯 <span>Career Discovery</span></div>
+
+                <div class="progress-section">
+                    <div class="progress-bar-container">
+                        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="progress-percent">0% Complete</span>
+                </div>
+
+                <div class="header-actions">
+                    <button id="clear-section" class="btn btn-outline btn-sm">Clear Section</button>
+                    <button id="restart-top" class="btn btn-outline btn-sm" style="color: #EF4444; border-color: #EF4444;">Restart All</button>
+                    <button id="save-json" class="btn btn-outline btn-sm">Save Progress</button>
+                </div>
+            </header>
+
+            <div class="main-layout">
+                <aside class="side-nav" id="side-nav">
+                    <div class="side-nav-header">
+                        <p class="nav-title">Assessment Roadmap</p>
+                        <button id="minimize-sidebar" class="minimize-btn" title="Minimize Menu">◀</button>
+                    </div>
+                    <nav>
+                        <ul id="section-list">
+                            <!-- Injected by JS -->
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Expand button for minimized sidebar -->
+                <button id="expand-sidebar" class="expand-btn" style="display: none;" title="Expand Menu">Roadmap ▶</button>
+
+                <div class="main-content" id="scroll-target">
+                    <form id="career-form" onsubmit="return false;">
+                        <div id="sections-wrapper">
+                            <!-- Questions Injected Here -->
+                        </div>
+
+                        <div class="footer-nav">
+                            <button type="button" id="prev-btn" class="btn btn-secondary">← Previous</button>
+                            <div class="flex-spacer"></div>
+                            <button type="button" id="next-btn" class="btn btn-primary">Next Step →</button>
+                            <button type="button" id="finish-btn" class="btn btn-success" style="display: none;">Generate AI Report 🎊</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- 4. Result Screen -->
+        <section id="completion" class="screen result-screen">
+            <div class="result-container">
+                <div class="success-header">
+                    <span class="big-icon">🎉</span>
+                    <h1>Journey Mapped!</h1>
+                    <p>You've completed your self-assessment. Click below to copy your data and get your expert guidance.</p>
+                </div>
+
+                <div class="result-grid" style="display: block; max-width: 600px; margin: 60px auto;">
+                    <div class="result-card highlight-card">
+                        <h3>Copy My Report for AI</h3>
+                        <p>This will copy your entire report plus critical analysis instructions. Paste this into ChatGPT, Claude, or Gemini for your career guidance.</p>
+                        <button id="copy-prompt" class="btn btn-primary btn-full" style="margin-top: 20px;">Copy Full Data & AI Prompt</button>
+
+                        <div class="action-footer" style="margin-top: 30px; display: flex; gap: 15px;">
+                             <button id="back-to-form" class="btn btn-outline btn-sm" style="flex:1; color:#1e293b; border-color:#cbd5e1;">← Go Back & Edit</button>
+                             <button id="save-data-final" class="btn btn-outline btn-sm" style="flex:1; color:#1e293b; border-color:#cbd5e1;">💾 Save Progress File</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="reset-form" class="btn btn-link">Clear All Data & Start New Assessment</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- AI Instructions Header -->
+    <div id="ai-prompt-container">
+⚠️ CRITICAL INSTRUCTIONS FOR THE AI:
+You are receiving responses from an 18-year-old student who has filled out a detailed self-assessment questionnaire. Your role is to be a STRICT, CRITICAL Career Guide.
+YOUR APPROACH:
+✋ Analyze, don't validate - Don't just agree with what she says. Question, dig deeper, challenge assumptions.
+✋ Identify actual strengths from examples - She has NOT listed her strengths. READ her specific examples and DEDUCE what her real strengths are. For example, if she describes solving a complex problem through trial-and-error with patience, deduce she has problem-solving persistence.
+✋ Find contradictions - If she says she loves creativity but her examples show she follows instructions, call it out. If she says she's detail-oriented but describes careless mistakes, point it out.
+✋ Assess job preference alignment - Compare her actual strengths (deduced from examples) with her stated job preferences. Are they realistic? If not, be direct.
+✋ Differentiate her choices from others' influence - Identify which career choices are truly hers vs. influenced by parents/society. Be direct about this.
+✋ Reality-check everything - Budget constraints, AI disruption, market saturation, personal limitations. Ground her in reality, not dreams.
+✋ Focus on work experience insights - If she has work experience, this is GOLD. Her likes/dislikes from real work > theoretical preferences. Use this heavily.
+✋ Ask hard follow-up questions - Don't accept surface-level answers. Push for deeper reasoning.
+✋ Identify blind spots - Point out what she's avoiding thinking about or not seeing about herself.
+✋ Make her defend her choices - Ask "why" multiple times. Get to the real reason, not the nice reason.
+YOUR TONE: Professional, direct, slightly skeptical, but genuinely supportive in pushing her toward the RIGHT choice (not the easiest or most popular choice).
+YOUR OUTPUT STRUCTURE:
+1. First, list her actual strengths (deduced from her examples, not what she claimed)
+2. Then list her actual weaknesses (from her examples and contradictions)
+3. Then analyze her job preference alignment (does she have the strengths needed?)
+4. Then address family influence vs. her own choice
+5. Then provide AI-disruption reality check for each job
+6. Finally, give honest recommendations and next steps
+
+--- START OF ASSESSMENT REPORT ---
+    </div>
+
+    <!-- AI Instructions Footer -->
+    <div id="ai-footer-container">
+--- END OF ASSESSMENT DATA ---
+
+WHAT I NEED FROM AN HONEST CAREER GUIDE in step by step way, do not write too much for the user to be overwhelmed go step by step and in very easy words and use examples if needed. after every step ask user if AI can continue.
+
+Based on my answers above, please:
+1. Identify my actual strengths from my examples (don't just list what I think I'm good at)
+2. Find contradictions between what I say and what I do
+3. Challenge my job preferences - are they realistic for me?
+4. Point out if I'm following MY interest or someone else's
+5. Assess AI risk for each of my career choices realistically
+6. Suggest which career actually aligns with my real strengths and interests
+7. Identify skills I need to develop alongside my degree
+8. Recommend specific colleges in Mumbai for my top choice
+9. List entrance exams I'll need to clear
+10. Give me a 3-month action plan to test if my choice is right
+________________________________________
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script src="js/doc-gen.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
