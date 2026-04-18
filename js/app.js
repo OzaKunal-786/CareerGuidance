@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sideNav = document.getElementById('side-nav');
     const minimizeBtn = document.getElementById('minimize-sidebar');
     const expandBtn = document.getElementById('expand-sidebar');
+	const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+	const sidebarOverlay = document.getElementById('sidebar-overlay');
 
     const progressPercentText = document.getElementById('progress-percent');
     const progressBarFill = document.getElementById('progress-bar-fill');
@@ -134,9 +136,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (expandBtn) expandBtn.style.display = 'block';
         };
         if (expandBtn) expandBtn.onclick = () => {
-            if (sideNav) sideNav.classList.remove('minimized');
-            if (expandBtn) expandBtn.style.display = 'none';
-        };
+			if (sideNav) sideNav.classList.remove('minimized');
+			if (expandBtn) expandBtn.style.display = 'none';
+		};
+		
+		// NEW: Mobile hamburger toggle
+		if (mobileMenuBtn) {
+			mobileMenuBtn.onclick = () => {
+				sideNav.classList.toggle('active');
+				if (sidebarOverlay) sidebarOverlay.classList.toggle('active');
+			};
+		}
+		
+		// NEW: Click overlay to close sidebar
+		if (sidebarOverlay) {
+			sidebarOverlay.onclick = () => {
+				if (sideNav) sideNav.classList.remove('active');
+				sidebarOverlay.classList.remove('active');
+			};
+		}
 
         // JSON Upload
         const uploadTrigger = document.getElementById('upload-trigger');
@@ -208,9 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
             li.id = `nav-item-${index}`;
             li.innerHTML = `<span>${index + 1}. ${section.title}</span> <span class="tick" style="display:none">✓</span>`;
             li.onclick = () => {
-                currentSectionIndex = index;
-                updateUI();
-            };
+				currentSectionIndex = index;
+				updateUI();
+				// Auto-close on mobile after selecting a section
+				if (window.innerWidth <= 768) {
+					if (sideNav) sideNav.classList.remove('active');
+					if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+				}
+			};
             sectionList.appendChild(li);
         });
     }
