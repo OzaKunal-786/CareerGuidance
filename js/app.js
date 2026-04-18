@@ -1,3 +1,5 @@
+// AFTER (fixed — global scope, accessible everywhere including HTML onclick)
+let formData = {};              // ← TOP OF FILE, before everything else
 document.addEventListener('DOMContentLoaded', () => {
     // UI Elements
     const landingScreen = document.getElementById('landing');
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveDataFinalBtn = document.getElementById('save-data-final');
 
     let currentSectionIndex = 0;
-    let formData = {};
+
 
     function init() {
         console.log("System Initializing...");
@@ -140,30 +142,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const uploadTrigger = document.getElementById('upload-trigger');
         const jsonUpload = document.getElementById('json-upload');
         if (uploadTrigger) uploadTrigger.onclick = () => jsonUpload.click();
-        if (jsonUpload) jsonUpload.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    formData = JSON.parse(event.target.result);
-                    localStorage.setItem('careerFormData', JSON.stringify(formData));
-                    loadSavedDataToForm();
-                    if (landingScreen) {
-                        landingScreen.classList.remove('active');
-                        landingScreen.style.display = 'none';
-                    }
-                    if (mainContainer) {
-                        mainContainer.classList.add('active');
-                        mainContainer.style.display = 'flex';
-                    }
-                    currentSectionIndex = findFirstPendingSection();
-                    updateUI();
-                    alert("Progress Restored!");
-                } catch (err) { alert("Invalid file"); }
-            };
-            reader.readAsText(file);
-        };
+        // AFTER (fixed version) — order is critical
+		if (jsonUpload) jsonUpload.onchange = (e) => {
+			const file = e.target.files[0];
+			if (!file) return;
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				try {
+					formData = JSON.parse(event.target.result);
+					localStorage.setItem('careerFormData', JSON.stringify(formData));
+		
+					// STEP 1: Show container FIRST before touching any form elements
+					if (landingScreen) {
+						landingScreen.classList.remove('active');
+						landingScreen.style.display = 'none';
+					}
+					if (mainContainer) {
+						mainContainer.classList.add('active');
+						mainContainer.style.display = 'flex';
+					}
+		
+					// STEP 2: Navigate to right section
+					currentSectionIndex = findFirstPendingSection();
+					updateUI();
+		
+					// STEP 3: Load data AFTER container is visible (textareas resize correctly)
+					loadSavedDataToForm();
+		
+					// STEP 4: Alert AFTER browser has painted the layout
+					setTimeout(() => alert("Progress Restored!"), 150);
+		
+				} catch (err) { alert("Invalid file."); }
+			};
+			reader.readAsText(file);
+		};
 
         setInterval(saveToLocalStorage, 20000);
     }
