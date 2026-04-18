@@ -81,15 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSectionIndex--;
             updateUI();
         };
-        if (finishBtn) finishBtn.onclick = () => {
-            saveToLocalStorage();
-            if (mainContainer) mainContainer.style.display = 'none';
-            if (completionScreen) {
-                completionScreen.classList.add('active');
-                completionScreen.style.display = 'block';
-            }
-            window.scrollTo(0, 0);
-        };
+        if (finishBtn) {
+            finishBtn.onclick = (e) => {
+                e.preventDefault();
+                console.log("Finish button clicked");
+                saveToLocalStorage();
+                if (mainContainer) {
+                    mainContainer.classList.remove('active');
+                    mainContainer.style.display = 'none';
+                }
+                if (completionScreen) {
+                    completionScreen.classList.add('active');
+                    completionScreen.style.display = 'block';
+                }
+                window.scrollTo(0, 0);
+            };
+            // Add touchstart for mobile responsiveness
+            finishBtn.ontouchstart = (e) => {
+                e.preventDefault();
+                finishBtn.onclick(e);
+            };
+        }
 
         // 3. Reset & Clear logic
         if (restartBtnTop) restartBtnTop.onclick = fullReset;
@@ -99,8 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. File Operations & AI
         if (copyPromptBtn) copyPromptBtn.onclick = copyFullAIPrompt;
         if (backToFormBtn) backToFormBtn.onclick = () => {
-            if (completionScreen) completionScreen.style.display = 'none';
-            if (mainContainer) mainContainer.style.display = 'flex';
+            if (completionScreen) {
+                completionScreen.classList.remove('active');
+                completionScreen.style.display = 'none';
+            }
+            if (mainContainer) {
+                mainContainer.classList.add('active');
+                mainContainer.style.display = 'flex';
+            }
             updateUI();
         };
         if (saveDataFinalBtn) saveDataFinalBtn.onclick = downloadProgressFile;
@@ -131,8 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     formData = JSON.parse(event.target.result);
                     localStorage.setItem('careerFormData', JSON.stringify(formData));
                     loadSavedDataToForm();
-                    if (landingScreen) landingScreen.style.display = 'none';
-                    if (mainContainer) mainContainer.style.display = 'flex';
+                    if (landingScreen) {
+                        landingScreen.classList.remove('active');
+                        landingScreen.style.display = 'none';
+                    }
+                    if (mainContainer) {
+                        mainContainer.classList.add('active');
+                        mainContainer.style.display = 'flex';
+                    }
                     currentSectionIndex = findFirstPendingSection();
                     updateUI();
                     alert("Progress Restored!");
@@ -268,28 +292,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 const wrapper = document.createElement('label'); wrapper.className = 'option-item-compact';
                 const r = document.createElement('input'); r.type = q.type === 'radio' ? 'radio' : 'checkbox'; r.name = q.id; r.value = opt;
                 r.onclick = (e) => {
+                    // Logic to handle re-selection and toggling
                     if (r.type === 'radio') {
                         if (formData[q.id] === r.value) {
-                            setTimeout(() => { r.checked = false; }, 0); formData[q.id] = "";
+                            // If clicking already selected, deselect
+                            r.checked = false;
+                            formData[q.id] = "";
                             wrapper.classList.remove('selected');
                         } else {
+                            // Select new one
                             formData[q.id] = r.value;
-                            wrapper.parentElement.querySelectorAll('.option-item-compact').forEach(el => {
+                            const group = wrapper.parentElement;
+                            group.querySelectorAll('.option-item-compact').forEach(el => {
                                 el.classList.remove('selected');
-                                const subR = el.querySelector('input');
-                                if (subR) subR.checked = false;
+                                const otherInput = el.querySelector('input');
+                                if (otherInput) otherInput.checked = false;
                             });
                             r.checked = true;
                             wrapper.classList.add('selected');
                         }
                     } else {
+                        // Checkbox logic
                         const arr = Array.isArray(formData[q.id]) ? formData[q.id] : [];
-                        if (r.checked) { if (!arr.includes(r.value)) arr.push(r.value); }
-                        else formData[q.id] = arr.filter(v => v !== r.value);
+                        if (r.checked) {
+                            if (!arr.includes(r.value)) arr.push(r.value);
+                        } else {
+                            formData[q.id] = arr.filter(v => v !== r.value);
+                        }
                         wrapper.classList.toggle('selected', r.checked);
                     }
                     saveToLocalStorage();
-                    e.stopPropagation();
                 };
                 wrapper.appendChild(r);
                 wrapper.appendChild(document.createTextNode(' ' + opt));
