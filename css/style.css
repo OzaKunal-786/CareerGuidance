@@ -125,14 +125,43 @@ h1 { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 800; margin-bottom: 20px;
 /* Main Content (Questions Area) */
 .main-content {
     flex: 1;
-    padding: 40px 20px;
+    padding: 20px;
     overflow-y: auto;
     background: #F8FAFC;
     scroll-behavior: smooth;
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the form horizontally */
+    align-items: center;
+}
+
+/* Smarter Progress Bar (Moved to Bottom of Roadmap) */
+.progress-container-sidebar {
+    padding: 20px;
+    background: #F1F5F9;
+    border-top: 1px solid var(--border-light);
+    min-width: 260px;
+}
+.progress-bar-container {
+    height: 10px;
+    background: #E2E8F0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary-gradient);
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#progress-percent {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+    display: block;
+    text-align: center;
 }
 
 #career-form {
@@ -140,6 +169,7 @@ h1 { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 800; margin-bottom: 20px;
     max-width: 800px;
     display: flex;
     flex-direction: column;
+    margin-top: 20px;
 }
 
 /* Question Cards */
@@ -168,7 +198,6 @@ textarea, input, select {
 }
 textarea:focus, input:focus { border-color: var(--primary-blue); outline: none; background: white; }
 
-/* Auto-expanding Textarea adjustments */
 textarea {
     min-height: 40px;
     height: 40px;
@@ -198,7 +227,7 @@ textarea {
     width: 100%;
 }
 
-/* New Intuitive Minimize/Expand Buttons */
+/* Sidebar Toggle Buttons */
 .minimize-btn {
     background: #F1F5F9;
     border: none;
@@ -236,9 +265,7 @@ textarea {
     text-orientation: mixed;
     transition: all 0.2s;
 }
-.expand-btn:hover { background: #F8FAFC; padding-left: 15px; }
 
-/* Rest of the styles... */
 #section-list li {
     padding: 12px 15px;
     margin-bottom: 6px;
@@ -252,14 +279,29 @@ textarea {
     transition: 0.2s;
 }
 #section-list li.active { background: #EBF3FF; color: var(--primary-blue); font-weight: 800; }
+.tick { color: var(--success-green); font-weight: 800; }
+
 .btn { padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; font-size: 0.95rem; }
 .btn-primary { background: var(--primary-blue); color: white; }
 .btn-secondary { background: #E2E8F0; color: var(--text-dark); }
-.progress-bar-container { height: 8px; background: #E2E8F0; border-radius: 10px; overflow: hidden; margin-bottom: 4px; }
-.progress-bar-fill { height: 100%; background: var(--primary-gradient); width: 0%; transition: width 0.4s; }
+.header-actions { display: flex; gap: 6px; }
 
+/* Mobile Fixes */
+@media (max-width: 600px) {
+    .app-header {
+        height: auto;
+        flex-direction: column;
+        padding: 15px 10px;
+        gap: 12px;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
 @media (max-width: 768px) {
     .side-nav { position: fixed; left: 0; top: 60px; bottom: 0; width: 280px; transform: translateX(-100%); }
     .side-nav.active { transform: translateX(0); }
-    .expand-btn { display: none; }
 }
